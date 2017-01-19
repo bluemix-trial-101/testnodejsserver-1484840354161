@@ -33,6 +33,6 @@ sockets.on( 'connection', function( client ) {
 
 // Start
 server.on( 'request', app );  
-server.listen( environment.port, function() {  
+server.listen( 9000, function() {  
   console.log( environment.url );
 } );
