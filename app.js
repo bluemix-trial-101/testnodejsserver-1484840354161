@@ -1,28 +1,19 @@
-/*eslint-env node*/
-
-//------------------------------------------------------------------------------
-// node.js starter application for Bluemix
-//------------------------------------------------------------------------------
-
-// This application uses express as its web server
-// for more info, see: http://expressjs.com
-var express = require('express');
-
-// cfenv provides access to your Cloud Foundry environment
-// for more info, see: https://www.npmjs.com/package/cfenv
-var cfenv = require('cfenv');
-
-// create a new express server
-var app = express();
-
-// serve the files out of ./public as our main files
-app.use(express.static(__dirname + '/public'));
-
-// get the app environment from Cloud Foundry
-var appEnv = cfenv.getAppEnv();
-
-// start server on the specified port and binding host
-app.listen(appEnv.port, '0.0.0.0', function() {
-  // print a message when the server starts listening
-  console.log("server starting on " + appEnv.url);
-});
+ var ws = require('nodejs-websocket')
+  
+ // Secure Bluemix server from Scream server example: "hi" -> "HI!!!" 
+ var server = ws.createServer( function (conn) {
+     console.log("New connection")
+     if (conn.headers["x-forwarded-proto"] === "http" ) {
+         conn.sendText("Only Secure Web Sockets are allowed")
+         conn.close(1002, "Only Secure Web Sockets are allowed")
+     }
+     
+     conn.on("text", function (str) {
+         console.log("Received "+str)
+         conn.sendText(str.toUpperCase()+"!!!")
+     })
+     
+     conn.on("close", function (code, reason) {
+         console.log("Connection closed")
+     })
+ }).listen(3000)
